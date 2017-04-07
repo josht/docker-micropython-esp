@@ -6,12 +6,14 @@ RUN apt-get update \
   git unzip bash wget libtool-bin help2man python-dev \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/* \
-  && useradd --no-create-home micropython
+  && useradd --no-create-home esp
 
-USER micropython
+RUN cd /
 
 RUN git clone --recursive https://github.com/pfalcon/esp-open-sdk.git \
-  && chown -R micropython:micropython ../esp-open-sdk
+  && chown -R esp:esp /esp-open-sdk
+
+USER esp
 
 RUN cd esp-open-sdk && make STANDALONE=y
 
@@ -21,4 +23,4 @@ WORKDIR /opt
 
 VOLUME ["/opt"]
 
-CMD ["make -C mpy-cross"]
+CMD ["make", "-C", "esp8266"]
