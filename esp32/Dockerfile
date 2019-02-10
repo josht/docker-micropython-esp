@@ -1,4 +1,4 @@
-FROM alpine:3.6
+FROM alpine:3.9
 
 RUN apk update \
   && apk add git ca-certificates openssl python build-base \
@@ -17,10 +17,10 @@ ENV PATH=$PATH:/esp/xtensa-esp32-elf/bin
 
 ## Checkout esp-idf fix permissions and make sure we are on a supported version and setup env variables
 RUN cd /esp && git clone --recursive https://github.com/espressif/esp-idf.git
-RUN cd /esp/esp-idf && git checkout 3ede9f011b50999b0560683f9419538c066dd09e && git submodule update --init
+RUN cd /esp/esp-idf && git checkout release/v3.2 && git submodule update --init
 
 ## Define ESPIDF path
-ENV ESPIDF = /esp/esp-idf
+ENV ESPIDF=/esp/esp-idf
 
 ## Set environmental variables needed if flashing from images (only possible when the host system is linux)
 #ENV PORT = /dev/ttyUSB0
@@ -29,7 +29,7 @@ ENV ESPIDF = /esp/esp-idf
 #CROSS_COMPILE = xtensa-esp32-elf
 
 ## Checkout MicroPython
-RUN cd /esp && git clone --recursive https://github.com/micropython/micropython && cd micropython && git checkout v1.9.4
+RUN cd /esp && git clone --recursive https://github.com/micropython/micropython && cd micropython && git checkout v1.10
 
 ## Build MicroPython cross-compiler
 RUN cd /esp/micropython && make -C mpy-cross
